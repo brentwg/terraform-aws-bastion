@@ -1,8 +1,15 @@
 # -------------
 # Module Inputs
 # -------------
-variable "customer_name" {}
-variable "environment" {}
+variable "customer_name" {
+  description = "The name of the customer"
+  default     = ""
+}
+
+variable "environment" {
+  description = "The development environment (dev, test, prod...)"
+  default     = ""
+}
 
 # Route53
 variable "bastion_zone_id" {
@@ -20,3 +27,54 @@ variable "bastion_zone_ttl" {
   default     = ""
 }
 
+# ASG Launch Configuration
+variable "bastion_region" {
+  description = "Bastion AWS region"
+  default     = ""
+}
+
+variable "bastion_image_id" {
+  description = "Bastion AMI image ID"
+  default     = ""
+}
+
+variable "bastion_instance_type" {
+  description = "Bastion instance type"
+  default     = ""
+}
+
+variable "bastion_key_name" {
+  description = "Bastion SSH key pair name"
+  default     = ""
+}
+
+variable "bastion_security_groups" {
+  description = "Bastion security group list"
+  type        = "list"
+  default     = []
+}
+
+variable "bastion_user_data_script" {
+  description = "Bastion user data bootstrap script"
+  default     = ""
+}
+
+variable "bastion_ebs_optimized" {
+  description = "Bastion EBS optimized (true/false)"
+  default     = "false"
+}
+
+variable "bastion_enable_monitoring" {
+  description = "Bastion enable detailed monitoring (true/false)"
+  default     = "false"
+}
+
+variable "bastion_volume_type" {
+  description = "Bastion root volume type"
+  default     = ""
+}
+
+variable "bastion_volume_size" {
+  description = "Bastion root volume size (GB)"
+  default     = ""
+}

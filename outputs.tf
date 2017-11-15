@@ -13,6 +13,7 @@ output "bastion_dns_name" {
   value       = "${aws_route53_record.bastion.fqdn}"
 }
 
+
 # IAM
 output "bastion_role_arn" {
   description = "The Bastion's EC2 IAM role ARN"
@@ -28,4 +29,3 @@ output "bastion_instance_profile_name" {
   description = "The Bastion's EC2 instance profile name"
   value       = "${aws_iam_instance_profile.bastion_instance_profile.name}"
 }
-
