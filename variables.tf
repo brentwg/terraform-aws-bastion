@@ -1,6 +1,8 @@
 # -------------
 # Module Inputs
 # -------------
+variable "customer_name" {}
+variable "environment" {}
 
 # Route53
 variable "bastion_zone_id" {
