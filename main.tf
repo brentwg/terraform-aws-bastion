@@ -11,7 +11,7 @@ resource "aws_eip" "bastion_eip" {
 # ----------------------
 resource "aws_route53_record" "bastion" {
   zone_id = "${var.bastion_zone_id}"
-  name = "bastion.${var.bastion_domain_name}"
+  name = "${var.bastion_domain_name}"
   type = "A"
   ttl = "${var.bastion_zone_ttl}"
 
@@ -48,8 +48,8 @@ EOF
 # ------------------
 # Bastion EC2 Policy
 # ------------------
-resource "aws_iam_policy" "bastion_policy" {
-  name        = "${var.customer_name}_${var.environment}_bastion_policy"
+resource "aws_iam_policy" "bastion_ec2_policy" {
+  name        = "${var.customer_name}_${var.environment}_bastion_ec2_policy"
   path        = "/"
   description = "${var.customer_name}_${var.environment} Bastion EC2 Policy"
 
@@ -78,7 +78,46 @@ EOF
 # ---------------------------------
 resource "aws_iam_role_policy_attachment" "bastion_attach_ec2_policy" {
   role       = "${aws_iam_role.bastion_role.name}"
-  policy_arn = "${aws_iam_policy.bastion_policy.arn}"
+  policy_arn = "${aws_iam_policy.bastion_ec2_policy.arn}"
+}
+
+
+# ------------------------------
+# Bastion CloudWatch Logs Policy
+# ------------------------------
+resource "aws_iam_policy" "bastion_logs_policy" {
+  name        = "${var.customer_name}_${var.environment}_bastion_logs_policy"
+  path        = "/"
+  description = "${var.customer_name}_${var.environment} Bastion Logs Policy"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents",
+        "logs:DescribeLogStreams"
+      ],
+      "Resource": [
+        "arn:aws:logs:*:*:*"
+      ]
+    }
+  ]
+}
+EOF
+}
+
+
+# ----------------------------------
+# Attach Bastion Logs Policy to Role
+# ----------------------------------
+resource "aws_iam_role_policy_attachment" "bastion_attach_logs_policy" {
+  role       = "${aws_iam_role.bastion_role.name}"
+  policy_arn = "${aws_iam_policy.bastion_logs_policy.arn}"
 }
 
 
@@ -135,3 +174,23 @@ resource "aws_launch_configuration" "bastion_launch_configuration" {
 # --------------------------
 # Bastion Auto-Scaling Group
 # --------------------------
+resource "aws_autoscaling_group" "bastion_asg" {
+  name                 = "${var.customer_name}-${var.environment}_bastion_asg"
+  max_size             = "${var.bastion_max_size}"
+  min_size             = "${var.bastion_min_size}"
+  desired_capacity     = "${var.bastion_desired_capacity}"
+  launch_configuration = "${aws_launch_configuration.bastion_launch_configuration.name}"
+  vpc_zone_identifier  = ["${var.bastion_asg_subnets}"]
+
+  tag {
+    key                 = "Name"
+    value               = "${var.customer_name}-${var.environment}-bastion-asg"
+    propagate_at_launch = "true"
+  }
+
+  tag {
+    key                 = "Terraform"
+    value               = "true"
+    propagate_at_launch = "true"
+  }
+}

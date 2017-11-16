@@ -78,3 +78,25 @@ variable "bastion_volume_size" {
   description = "Bastion root volume size (GB)"
   default     = ""
 }
+
+# ASG
+variable "bastion_max_size" {
+  description = "Bastion ASG maximum size"
+  default     = "1"
+}
+
+variable "bastion_min_size" {
+  description = "Bastion ASG minimum size"
+  default     = "1"
+}
+
+variable "bastion_desired_capacity" {
+  description = "Bastion ASG desired size"
+  default     = "1"
+}
+
+variable "bastion_asg_subnets" {
+  description = "List of subnet IDs to launch Bastion in"
+  type        = "list"
+  default     = []
+}
