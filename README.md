@@ -50,7 +50,7 @@ bastion_asg_subnets:      Subnet into which you intend to deploy the ASG
 # Bastion
 # -------
 module "bastion" {
-  source = "../modules/bastion"
+  source = "../<path-to>/terraform-aws-bastion"
 
   customer_name       = "${var.customer_name}"
   environment         = "${var.environment}"
