@@ -52,33 +52,33 @@ bastion_asg_subnets:      Subnet into which you intend to deploy the ASG
 module "bastion" {
   source = "../<path-to>/terraform-aws-bastion"
 
-  customer_name       = "${var.customer_name}"
-  environment         = "${var.environment}"
+  customer_name       = "thisCustomer"
+  environment         = "prod"
 
   # Route53
   bastion_zone_id     = "${data.aws_route53_zone.my_domain.zone_id}"
   bastion_domain_name = "bastion.${var.domain_name}"
-  bastion_zone_ttl    = "${var.bastion_zone_ttl}"
+  bastion_zone_ttl    = "300"
 
   # Launch config
   bastion_region        = "${var.region}"      
-  bastion_image_id      = "${var.bastion_image_id}"
-  bastion_instance_type = "${var.bastion_instance_type}"
-  bastion_key_name      = "${var.key_pair_name}"
+  bastion_image_id      = "ami-yourID"
+  bastion_instance_type = "t2.micro"
+  bastion_key_name      = "your_keypair"
 
   bastion_security_groups   = [
     "${module.bastion_security_group.bastion_security_group_id}"
   ]
   
-  bastion_ebs_optimized     = "${var.bastion_ebs_optimized}"
-  bastion_enable_monitoring = "${var.bastion_enable_monitoring}"
-  bastion_volume_type       = "${var.bastion_volume_type}"
-  bastion_volume_size       = "${var.bastion_volume_size}"
+  bastion_ebs_optimized     = "false"
+  bastion_enable_monitoring = "false"
+  bastion_volume_type       = "gp2"
+  bastion_volume_size       = "8"
 
   # ASG
-  bastion_max_size         = "${var.bastion_max_size}"
-  bastion_min_size         = "${var.bastion_min_size}"
-  bastion_desired_capacity = "${var.bastion_desired_capacity}"
+  bastion_max_size         = "1"
+  bastion_min_size         = "1"
+  bastion_desired_capacity = "1"
 
   bastion_asg_subnets      = ["${module.vpc.public_subnets}"]
 }
