@@ -142,7 +142,7 @@ data "template_file" "bastion_user_data" {
   }
 }
 
-
+/*
 # -----------------------------
 # Lookup: Custom Bastion AMI ID
 # -----------------------------
@@ -156,14 +156,14 @@ data "aws_ami" "bastion_ami" {
 
   owners     = ["self"]
 }
-
+*/
 
 # ----------------------------
 # Bastion Launch Configuration
 # ----------------------------
 resource "aws_launch_configuration" "bastion_launch_configuration" {
   name_prefix          = "${var.customer_name}_${var.environment}_bastion_lc-"
-  image_id             = "${data.aws_ami.bastion_ami.image_id}"
+  image_id             = "${var.bastion_image_id}"
   instance_type        = "${var.bastion_instance_type}"
   key_name             = "${var.bastion_key_name}"
   iam_instance_profile = "${aws_iam_instance_profile.bastion_instance_profile.name}"
